@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ingress-header-echoer
+  labels:
+    app: ingress-header-echoer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ingress-header-echoer
+  template:
+    metadata:
+      labels:
+        app: ingress-header-echoer
+    spec:
+      containers:
+        - name: ingress-header-echoer
+          image: ferasmaali/ingress-header-echoer:v1
+          ports:
+            - containerPort: 3000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ingress-header-echoer
+  labels:
+    app: ingress-header-echoer
+spec:
+  type: ClusterIP
+  ports:
+    - port: 3000
+      targetPort: 3000
+  selector:
+    app: ingress-header-echoer
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-header-echoer
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: goalert.quizplusdev.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: ingress-header-echoer
+                port:
+                  number: 3000
