@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: ingress-header-echoer
-          image: ferasmaali/ingress-header-echoer:v1
+          image: ferasmaali/ingress-header-echoer:v2
           ports:
             - containerPort: 3000
 ---
